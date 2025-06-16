@@ -5,6 +5,7 @@ using Random = UnityEngine.Random;
 public class SpawnManager : MonoBehaviour
 {
     public GameObject platformPrefab;
+    public GameObject powerupPrefab;
     public Transform player;
     private float lastSpawnPlatformLength = 0f;
     private float lastSpawnPlatformX = -5f;
@@ -49,14 +50,22 @@ public class SpawnManager : MonoBehaviour
         Vector3 spawnPos = new Vector3(spawnX, spawnY, 0);
 
         // Create platform
-        Platform platform = Instantiate(platformPrefab, spawnPos, Quaternion.identity).GetComponent<Platform>();
+        GameObject platformGameObject = Instantiate(platformPrefab, spawnPos, Quaternion.identity);
+        Platform platform = platformGameObject.GetComponent<Platform>();
         platform.startY = minY;
         platform.endY = maxY;
         platform.transform.localScale = new Vector3(length, 1, 1);
         platform.speed = Random.Range(minSpeed, maxSpeed);
 
+        if (Random.Range(0, 5) == 0)
+        {
+            GameObject powerup = Instantiate(powerupPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            powerup.transform.SetParent(platformGameObject.transform);
+            powerup.transform.localPosition = new Vector3(0, 1, 0);
+        }
+
     // Update last spawn position
-    lastSpawnPlatformX = spawnX;
+        lastSpawnPlatformX = spawnX;
         lastSpawnPlatformMinY = minY;
         lastSpawnPlatformMaxY = maxY;
         lastSpawnPlatformLength = length;
